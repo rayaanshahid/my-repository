@@ -15,7 +15,8 @@ public class BlogpostServiceApplication extends Application<BlogpostServiceConfi
     }
 
     public void run(BlogpostServiceConfiguration blogpostServiceConfiguration, Environment environment) throws Exception {
-        BlogpostRepository postgresBlogpostRepository = new PostgresBlogpostRepository(new PostgresInitialSetup());
+        AdditionalConfig additionalConfig = new AdditionalConfig();
+        BlogpostRepository postgresBlogpostRepository = new PostgresBlogpostRepository(new PostgresInitialSetup(additionalConfig),additionalConfig);
         BlogResources blogResources = new BlogResources(postgresBlogpostRepository);
         environment.jersey().register(blogResources);
         environment.jersey().setUrlPattern(ConfigFactory.load().getString("blog-post.url-prefix"));

@@ -1,6 +1,6 @@
 package com.rayaan.blogpost.kafka.event;
 
-import com.oracle.jrockit.jfr.Producer;
+import com.rayaan.blogpost.AdditionalConfig;
 import org.apache.kafka.clients.producer.*;
 import org.apache.kafka.common.serialization.StringSerializer;
 import com.typesafe.config.*;
@@ -14,10 +14,11 @@ public class KafkaBlogpostEventProducer {
     //private final String TOPIC = "blog-post-event-topic-v1";
     //private final String BOOTSTRAP_SERVERS = "localhost:9092";
     private final Producer<String, String> producer;
-
-    public KafkaBlogpostEventProducer() {
+    Config config;
+    public KafkaBlogpostEventProducer(AdditionalConfig additionalConfig) {
+        config = additionalConfig.getKafkaConfig();
         final Properties props = new Properties();
-        props.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, getConfig().getString("bootstrap-servers"));
+        props.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, config.getString("bootstrap-servers"));
         props.put(ProducerConfig.CLIENT_ID_CONFIG,"Kafka-blog-post-event-producer");
         props.put(ProducerConfig.ACKS_CONFIG, "all");
         props.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
@@ -29,13 +30,9 @@ public class KafkaBlogpostEventProducer {
     public void produce(String blogId, String Description){
         producer.send(
                 new ProducerRecord<>(
-                        getConfig().getString("blog-topic"),
+                        config.getString("blog-topic"),
                         blogId,
                         Description));
     }
 
-    private Config getConfig(){
-        final Config config = ConfigFactory.load();
-        return config.getConfig("blog-post.kafka");
-    }
 }

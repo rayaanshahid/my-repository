@@ -1,5 +1,9 @@
 package com.rayaan.blogpost.repository.postgres;
 
+import com.rayaan.blogpost.AdditionalConfig;
+import com.typesafe.config.Config;
+import com.typesafe.config.ConfigFactory;
+
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.Statement;
@@ -9,16 +13,17 @@ import java.util.logging.Logger;
 public class PostgresInitialSetup {
     Connection connection;
     Statement stmt;
+    Config config;
     private static final Logger LOGGER = Logger.getLogger(PostgresInitialSetup.class.getName());
-    public PostgresInitialSetup(){
-
+    public PostgresInitialSetup(AdditionalConfig additionalConfig){
+        config = additionalConfig.getPostgresConfig();
     }
     Connection getConnection(){
         try {
             Class.forName("org.postgresql.Driver");
             connection = DriverManager
-                    .getConnection("jdbc:postgresql://localhost:5433/myDB",
-                            "dbuser", "myblogs");
+                    .getConnection("jdbc:postgresql://"+config.getString("host")+":"+config.getString("port")+"/"+config.getString("database"),
+                            config.getString("user"), config.getString("password"));
             System.out.println("Opened database successfully");
             return connection;
         } catch ( Exception e ) {
@@ -69,4 +74,5 @@ public class PostgresInitialSetup {
     void closeConnection() throws Exception{
         connection.close();
     }
+
 }

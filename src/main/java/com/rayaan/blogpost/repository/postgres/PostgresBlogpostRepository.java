@@ -1,6 +1,7 @@
 package com.rayaan.blogpost.repository.postgres;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.rayaan.blogpost.AdditionalConfig;
 import com.rayaan.blogpost.kafka.event.KafkaBlogpostEventProducer;
 import com.rayaan.blogpost.repository.BlogpostRepository;
 import com.rayaan.blogpost.resource.model.BlogRepresentation;
@@ -18,12 +19,12 @@ public class PostgresBlogpostRepository implements BlogpostRepository {
     Statement stmt;
     KafkaBlogpostEventProducer kafkaBlogpostEventProducer;
     private static final Logger LOGGER = Logger.getLogger(PostgresBlogpostRepository.class.getName());
-    public PostgresBlogpostRepository(PostgresInitialSetup postgresInitialSetup){
+    public PostgresBlogpostRepository(PostgresInitialSetup postgresInitialSetup, AdditionalConfig additionalConfig){
         connection = postgresInitialSetup.getConnection();
         stmt=postgresInitialSetup.getStatement();
         postgresInitialSetup.createTable();
         //postgresInitialSetup.deleteTable();
-        kafkaBlogpostEventProducer = new KafkaBlogpostEventProducer();
+        kafkaBlogpostEventProducer = new KafkaBlogpostEventProducer(additionalConfig);
         //kafkaBlogpostEventProducer.createProducer();
     }
     public Boolean addBlog(BlogRepresentation blogRepresentation) {
