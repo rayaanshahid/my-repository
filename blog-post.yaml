@@ -1,0 +1,172 @@
+---
+swagger: "2.0"
+info:
+  version: "1.0.0"
+  title: Blog Post REST
+host: localhost:10000
+basePath: /blog-service/api
+schemes:
+- http
+consumes:
+- application/json
+produces:
+- application/json
+paths:
+  /blogs:
+    get:
+      description: Get all blogs
+      summary: blogs
+      operationId: BlogsGet
+      produces:
+      - application/json
+      responses:
+        200:
+          description: OK
+          schema:
+            type: object
+            items:
+              properties:
+                blod_id:
+                  type: string
+                created_by:
+                  type: string
+                blog_topic:
+                  type: string
+                headline:
+                  type: string
+                blog_text:
+                  type: string
+                image:
+                  type: string
+          examples: {
+            "found": true,
+            "size": 2,
+            "total": 30,
+            "page": 0,
+            "pages": 1,
+            "blogs": [
+            {
+              "blog_id":"A1",
+              "created_by":"Rayaan",
+              "blog_topic": "The most horrifying tale of ...",
+              "headline": "Mind boggling truth about ...",
+              "blog_text": "Hi, this is my new blog text about a horrifying incident ...",
+              "image": "https://www.google.no/search?q=horrifying&source=lnms&tbm=isch&sa=X&ved=0ahUKEwjB8eKU877cAhXJkywKHQ4ND5gQ_AUICigB&biw=1536&bih=732#imgrc=Vi6KGVoE8R52LM:"
+            },
+            {
+              "blog_id":"A2",
+              "created_by":"Maks",
+              "blog_topic": "The most surprising tale of ...",
+              "headline": "Mind boggling truth about ...",
+              "blog_text": "Hi, this is my new blog text about a horrifying incident ...",
+              "image": "https://www.google.no/search?q=surprising&source=lnms&tbm=isch&sa=X&ved=0ahUKEwiG8Oug877cAhVCiaYKHdLtCuwQ_AUICigB&biw=1536&bih=732#imgrc=RgkGw-I5wM5jPM:"
+            }
+            ]
+          }
+      x-unitTests: []
+      x-operation-settings:
+        CollectParameters: false
+        AllowDynamicQueryParameters: false
+        AllowDynamicFormParameters: false
+        IsMultiContentStreaming: false
+    post:
+      description: Register new blog
+      summary: post
+      operationId: BlogsPost
+      parameters:
+      - name: body
+        in: body
+        required: true
+        schema:
+          $ref: '#/definitions/blogs'
+      responses:
+        201:
+          description: Created
+  /blogs/{blog_id}:
+    parameters:
+    - $ref: '#/parameters/blog_id'
+    delete:
+      parameters:
+      - name: blog_id
+        in: path
+        required: true
+        type: string
+      responses:
+        204:
+          description: No content
+    get:
+      parameters:
+      - name: blog_id
+        in: path
+        required: true
+        type: string
+      responses:
+        200:
+          description: OK
+          examples: {
+            "found": true,
+            "size": 1,
+            "page": 0,
+            "blogs": [
+            {
+              "blog_id":"A1",
+              "created_by":"Rayaan",
+              "blog_topic": "The most horrifying tale of ...",
+              "headline": "Mind boggling truth about ...",
+              "blog_text": "Hi, this is my new blog text about a horrifying incident ...",
+              "image": "https://www.google.no/search?q=horrifying&source=lnms&tbm=isch&sa=X&ved=0ahUKEwjB8eKU877cAhXJkywKHQ4ND5gQ_AUICigB&biw=1536&bih=732#imgrc=Vi6KGVoE8R52LM:"
+            }
+            ]
+          }
+parameters:
+  blog_id:
+    name: blog_id
+    type: string
+    description: The identifier of the blog.
+    in: path
+    required: true
+definitions:
+  blogs:
+    required:
+    - blog_id
+    - created_by
+    - blog_topic
+    - headline
+    - blog_text
+    - image
+    properties:
+      blog_id:
+        type: string
+        default: someBlogId
+        description: Blog id
+      created_by:
+        type: string
+        default: Rayaan
+        description: Blog created by
+      blog_topic:
+        type: string
+        default: Topic
+        description: Blog Topic
+      headline:
+        type: string
+        default: Headline
+        description: Blog Headline
+      blog_text:
+        type: string
+        default: someText
+        description: Blog Text
+      image:
+        type: string
+        default: image
+        description: Image URL
+
+
+#      description_keys:
+#        type: array
+#        items:
+#          type: string
+#        default:
+#        - KIS_LIME_ppa1_h2
+#        - ABC
+#        - 123_XYZ
+#        description: Description keys for matching
