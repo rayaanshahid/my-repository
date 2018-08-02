@@ -16,6 +16,9 @@ public class BlogpostServiceApplication extends Application<BlogpostServiceConfi
 
     public void run(BlogpostServiceConfiguration blogpostServiceConfiguration, Environment environment) throws Exception {
         AdditionalConfig additionalConfig = new AdditionalConfig();
+        // Service service;
+        // if (additionalConfig.getEnv == "test") service = new Service(new InMemoryBlogpostRepository);
+        // else service = new Service(PostgresBlogPostRepository());
         BlogpostRepository postgresBlogpostRepository = new PostgresBlogpostRepository(new PostgresInitialSetup(additionalConfig),additionalConfig);
         BlogResources blogResources = new BlogResources(postgresBlogpostRepository);
         environment.jersey().register(blogResources);

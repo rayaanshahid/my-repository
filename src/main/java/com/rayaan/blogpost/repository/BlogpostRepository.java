@@ -5,6 +5,7 @@ import com.rayaan.blogpost.resource.model.BlogRepresentation;
 import java.util.List;
 
 public interface BlogpostRepository {
+    @Deprecated
     Boolean addBlog(BlogRepresentation blogRepresentation);
     BlogRepresentation getBlog(String blogId);
     List<BlogRepresentation> getAll();

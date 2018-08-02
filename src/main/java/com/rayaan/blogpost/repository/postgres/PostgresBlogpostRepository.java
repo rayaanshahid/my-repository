@@ -13,20 +13,24 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import com.typesafe.config.*;
 
 public class PostgresBlogpostRepository implements BlogpostRepository {
     Connection connection;
     Statement stmt;
     KafkaBlogpostEventProducer kafkaBlogpostEventProducer;
+    Config kafkaConfig;
     private static final Logger LOGGER = Logger.getLogger(PostgresBlogpostRepository.class.getName());
     public PostgresBlogpostRepository(PostgresInitialSetup postgresInitialSetup, AdditionalConfig additionalConfig){
         connection = postgresInitialSetup.getConnection();
         stmt=postgresInitialSetup.getStatement();
         postgresInitialSetup.createTable();
         //postgresInitialSetup.deleteTable();
-        kafkaBlogpostEventProducer = new KafkaBlogpostEventProducer(additionalConfig);
-        //kafkaBlogpostEventProducer.createProducer();
+        kafkaConfig = additionalConfig.getKafkaConfig();
+        kafkaBlogpostEventProducer = new KafkaBlogpostEventProducer(kafkaConfig.getString("bootstrap-servers"),
+                kafkaConfig.getString("blog-topic"));
     }
+    @Deprecated
     public Boolean addBlog(BlogRepresentation blogRepresentation) {
         try{
             String sql = "INSERT INTO BLOG (blogId,createdBy,blogTopic,headline,blogText,image) "
